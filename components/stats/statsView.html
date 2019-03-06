@@ -1,0 +1,161 @@
+<div class="container-fluid">
+  <h1 class="stats-main-header shadowed-borders-main-heading">player statistics</h1>
+  <h1 class="stats-heading shadowed-borders-sub-heading shadowed-borders-center">player</h1>
+  <p class="shadowed-text shadowed-text-center">{{userStats.username == activeUser.username ? userStats.username + " (You)": userStats.username }}</h1>
+  <h1 class="stats-heading shadowed-borders-sub-heading shadowed-borders-center">joined on</h1>
+  <p class="shadowed-text shadowed-text-center">{{ dateOfUTC(userStats.joindate) | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+  
+  <div class="row"> 
+    <div class="col col-0 col-md-2"></div>
+    <div class="col col-12 col-md-4">
+      <h1 class="shadowed-text">singleplayer statistics</h1>
+      <div class="table-responsive  stats-table stats-table-bottom-margin">
+        <table class="table table-hover">
+          <tbody>
+            <tr>
+              <td>Best time</td>
+              <td class="text-success">{{userStats.spbesttime | date : "mm:ss.sss" || "N/A"}}</td>
+            </tr>
+            
+            <tr>
+              <td>Games played:</td>
+              <td>{{userStats.spgamesplayed}}</td>
+            </tr>
+            <tr>
+              <td>Races finished:</td>
+              <td>{{userStats.spgamesplayed-userStats.spcarscrashed}} ({{((userStats.spgamesplayed-userStats.spcarscrashed)/userStats.spgamesplayed)*100 || 0 | number:0 }} %)</td>
+            </tr>
+            <tr>
+              <td>Checkpoints passed:</td>
+              <td>{{userStats.flagscollected}}</td>
+            </tr>
+            <tr>
+              <td>Best successful drift:</td>
+              <td>{{userStats.bestdrift | number: 0}}</td>
+            </tr>
+            <tr>
+              <td>Total performed drifts:</td>
+              <td>{{userStats.spdriftcount}}</td>
+            </tr>
+            <tr>
+              <td>Average drift:</td>
+              <td>{{(userStats.spdrifttotal / userStats.spdriftcount | number: 0) || 0}}</td>
+            </tr>
+            <tr>
+              <td>Cars wrecked:</td>
+              <td class="text-danger">{{userStats.spcarscrashed}}</td>
+            </tr>
+            <tr>
+              <td>Total damage taken</td>
+              <td class="text-danger">{{userStats.spdamagetaken}}</td>
+            </tr>
+            <tr>
+              <td>Average damage taken</td>
+              <td class="text-danger">{{(userStats.spdamagetaken / userStats.spgamesplayed | number: 0) || 0}}</td>
+            </tr>
+          <tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col col-12 col-md-4">
+      <h1 class="shadowed-text">multiplayer statistics</h1>
+      <div class="table-responsive stats-table stats-table-bottom-margin">
+        <table class="table table-hover">
+          <tbody>
+            <tr>
+              <td>Rating</td>
+              <td ng-class="{true: 'text-success', false: 'text-danger'}[userStats.rating>=1000]">{{userStats.rating}}</td>
+            </tr>
+            <tr>
+              <td>Games played:</td>
+              <td>{{userStats.mpgamesplayed}}</td>
+            </tr>
+            <tr>
+              <td>Games won:</td>
+              <td>{{userStats.mpgameswon}} ({{(userStats.mpgameswon/userStats.mpgamesplayed)*100 || 0 | number:0 }} %)</td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                  <div class="canvas-wrapper">
+                    <canvas id="line" class="chart chart-line ratingchart" chart-data="ratingData" chart-colors="colors"
+                      chart-labels="labels" chart-options="options" chart-series="series">
+                    </canvas>
+                  </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col col-0 col-md-2"></div>
+  </div>
+  <h1 class="stats-heading shadowed-borders-sub-heading shadowed-borders-center">game history</h1>
+  <div class="row">
+    <div class="col col-0 col-md-2"></div>
+    <div class="col col-12 col-md-8">
+      <h1 class="shadowed-text stats-text-top-margin">last 5 singleplayer games</h1>
+      <div class="table table-responsive stats-table">
+        <table class="table">
+          <thead>
+            <th>Date</th>
+            <th>Result</th>
+            <th>Checkpoints passed</th>
+            <th>Drift count</th>
+            <th>Average drift</th>
+            <th>Time</th>
+          </thead>
+          <tbody>
+            <tr ng-repeat="result in recentGamesSP" ng-class="{true: 'won-game', false: 'lost-game'}[result.crashed==0]">
+              <td>{{dateOfUTC(result.gamedate) | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+              <td>{{result.crashed==0 ? 'FINISHED' : 'CRASHED'}}</td>
+              <td>{{result.flagsCollected}}</td>
+              <td>{{result.driftCount}}</td>
+              <td>{{((result.driftTotal)/result.driftCount | number:0) || 0}}</td>
+              <td>{{result.mstime | date : "mm:ss.sss"}}</td>
+            <tr>
+          </tbody>
+        </table>
+      </div>
+    </div>  
+    <div class="col col-0 col-md-2"></div>
+  </div>
+  <div class="row">
+    <div class="col col-0 col-md2"></div>
+    <div class="col col-12 col-md-8">
+      <h1 class="shadowed-text stats-text-top-margin">last 5 multiplayer games</h1>
+      <div class="table table-responsive stats-table">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Result</th>
+              <th>Time</th>
+              <th>Opponent</th>
+              <th>Opponent Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="result in recentGamesMP" ng-class="result.playerOne == userid ? (
+                  	result.winner == 1 ? 'won-game' : (result.winner == 0 ? 'tied-game' : 'lost-game')) 
+                  	: ( result.winner == 1 ? 'lost-game' : (result.winner == 0 ? 'tied-game' : 'won-game') )">
+              <td>{{dateOfUTC(result.gamedate) | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+              <td>{{ result.playerOne == userid ? (
+                	result.winner == 1 ? 'WON' : (result.winner == 0 ? 'TIE' : 'LOST')) 
+                	: ( result.winner == 1 ? 'LOST' : (result.winner == 0 ? 'TIE' : 'WON') )   }}
+            	</td>
+              <td>{{ (result.playerOne == userid ? result.playeronemstime : result.playertwomstime) | date : "mm:ss.sss" }}</td>
+              <td>
+                <a ui-sref="{{ result.playerOne == userid ? 'stats.player({userid: result.playerTwo})' : 'stats.player({userid: result.playerOne})' }}">
+                  {{result.playerOne == userid ? result.p2name : result.p1name}}</td>
+                </a>
+              <td>
+                  {{ ( result.playerOne == userid ? result.playertwomstime : result.playeronemstime ) | date : "mm:ss.sss" }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col col-0 col-md2"></div>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<custom-header>
+  <nav class="navbar navbar-expand-md bg-dark navbar-dark headerbackground">
+    <!-- Collapsible button -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <a class="navbar-brand" ui-sref="home">MyCarGame</a>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="nav navbar-nav">
+			  <li class="nav-item">
+			    <a ng-class="{'nav-link-active':$state.current.name==='game'}" class="nav-link" ui-sref="game">Play</a>
+			  </li>
+				<li class="nav-item">
+				  <a ng-class="{'nav-link-active':$state.includes('howtoplay')}" class="nav-link" ui-sref="howtoplay">How To Play</a>
+			  </li>
+				<li class="nav-item">
+				  <a ng-class="{'nav-link-active':$state.includes('leaderboards')}" class="nav-link" ui-sref="leaderboards.singleplayer">Leaderboards</a>
+			  </li>
+				<li class="nav-item">
+				  <a ng-class="{'nav-link-active':$state.includes('credits')}" class="nav-link" ui-sref="credits">Credits</a>
+			  </li>
+		  </ul>
+		  <ul class="nav navbar-nav ml-auto">
+				<li class="nav-item">
+				  <a ng-class="{'nav-link-active':$state.current.name==='login'}" class="nav-link" ui-sref="" ng-hide="activeUser" ng-click="openLogin()">Log In</a>
+			  </li>
+				<li class="nav-item">
+				  <a ng-class="{'nav-link-active':$state.current.name==='register'}" class="nav-link" ui-sref="" ng-hide="activeUser" ng-click="openRegister()">Register</a>
+		    </li>
+	      <span class="navbar-text" ng-show="activeUser">Logged in as <a ui-sref="stats.player({userid: activeUser.userid})">{{activeUser.username}}</a></span>
+		    <span class="navbar-text">
+		      <li class="nav-item nav-rightmost">
+				    <a class="nav-link" ui-sref="" ng-show="activeUser" ng-click="logout()">Log out</a>
+	        </li>
+	      </span>
+      </ul>
+    </div>
+  </nav>
+<custom-header>

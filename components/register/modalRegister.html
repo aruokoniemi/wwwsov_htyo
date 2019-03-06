@@ -1,0 +1,33 @@
+<div class="container-fluid shadowed-container">
+  <div class="modal-header">
+    <h3 class="shadowed-text">Register</h3>
+    <div class="cancel float-right" ng-click="close()">
+      <span class="close">x</span>
+    </div>
+  </div>
+  <form class="form-horizontal modal-form" method="post" ng-submit="register(credentials.username, credentials.password)" role="registerForm">
+    <div class="modal-body">
+      <div ng-hide="registrationSuccessful">
+        <div class="form-group">
+          <div class="col-xs-12">
+            <input class="form-control" type="username" ng-model="credentials.username" placeHolder="username" minLength="3" required/>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-12">
+            <input class="form-control" type="password" ng-model="credentials.password" placeHolder="password" minLength="5" required/>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-xs-12">
+          <span ng-hide="message == ''" ng-model="message" ng-class="messageClass">{{ message }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" ng-hide="registrationSuccessful">
+      <button type="submit" class="btn clickable btn-green">Register</button>
+      <button type="button" ng-click="close('Cancelled.')" class="btn clickable" form="registerForm">Cancel</button>
+    </div>
+  </form>
+</div>
